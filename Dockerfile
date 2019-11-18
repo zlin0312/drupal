@@ -1,23 +1,11 @@
-FROM drupal:8
-
-# Install packages
-RUN rm /bin/sh && ln -s /bin/bash /bin/sh && \
-    apt-get update && apt-get install --no-install-recommends -y \
-    curl \
-    wget \
-    vim \
-    git \
-    unzip \
-    mysql-client
-
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php && \
-    mv composer.phar /usr/local/bin/composer && \
-    ln -s /root/.composer/vendor/bin/drush /usr/local/bin/drush
+FROM zjlin/php7
 
 # Install Drush
-RUN composer global require drush/drush && \
-    composer global update
+ENV DRUSH_VERSION 8.3.0
+
+# Install Drush 8 with the phar file.
+RUN curl -fsSL -o /usr/local/bin/drush "https://github.com/drush-ops/drush/releases/download/$DRUSH_VERSION/drush.phar" && \
+    chmod +x /usr/local/bin/drush
 
 # Add drupal console
 RUN curl https://drupalconsole.com/installer -L -o drupal.phar \
